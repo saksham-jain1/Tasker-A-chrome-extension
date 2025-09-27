@@ -44,15 +44,22 @@ const display = () => {
       edit.innerHTML = `<img src="edit.jpg" height="20px" width="20px" id="${id}edit1" />`;
       edit.setAttribute("id", id + "edit");
       edit.setAttribute("class", "edit");
-      edit.addEventListener("click", (event) => editTask(event.target.id));
+      edit.addEventListener("click", (event) => {
+        event.stopPropagation();
+        editTask(event.target.id);
+      });
+      edit.addEventListener("dblclick", (event) => {
+        event.stopPropagation();
+      });
 
       const taskDelete = document.createElement("button");
       taskDelete.innerHTML = "x";
       taskDelete.setAttribute("id", id + "delete");
       taskDelete.setAttribute("class", "delete");
-      taskDelete.addEventListener("click", (event) =>
-        deleteTask(event.target.id)
-      );
+      taskDelete.addEventListener("click", (event) => {
+        event.stopPropagation();
+        deleteTask(event.target.id);
+      });
 
       newTask.appendChild(edit);
       newTask.appendChild(taskDelete);
@@ -74,14 +81,17 @@ document
 
 const editTask = (id) => {
   const taskIndex = parseInt(id[0]);
-  if (document.getElementById(taskIndex + "edit1").getAttribute('src')=='edit.jpg') {
+  if (
+    document.getElementById(taskIndex + "edit1").getAttribute("src") ==
+    "edit.jpg"
+  ) {
     const editableTask = document.getElementById(taskIndex + "task");
     editableTask.contentEditable = true;
     editableTask.focus();
     document.getElementById(taskIndex + "edit1").src = "logo.png";
   } else {
     const editableTask = document.getElementById(taskIndex + "task");
-    taskArr[taskIndex].task=editableTask.innerHTML;
+    taskArr[taskIndex].task = editableTask.innerHTML;
     editableTask.contentEditable = false;
     document.getElementById(taskIndex + "edit1").src = "edit.jpg";
     display();
@@ -98,7 +108,7 @@ const deleteTask = (id) => {
 const addNewTask = (id) => {
   if (task.value === null || task.value.trim() === "") return;
   taskArr.push({ task: task.value, completed: false });
-  localStorage.setItem("savedTasks", JSON.stringify(taskArr));
+  localStorage.setItem("Tasker", JSON.stringify(taskArr));
   display();
   task.value = "";
 };
@@ -110,12 +120,3 @@ const changeStatus = (id) => {
   display();
 };
 
-// const editTask = (id) => {
-//   const taskIndex = parseInt(id[0]);
-//   const taskText = taskArr[taskIndex].task;
-//   taskArr.splice(taskIndex, 1);
-//   localStorage.setItem("savedTasks", JSON.stringify(taskArr));
-//   updateView();
-//   const taskInput = document.getElementById("task-input");
-//   taskInput.value = taskText;
-// };
